@@ -1,0 +1,18 @@
+g++ -c -std=c++20 -O2 BigInt.cpp -o BigInt.o
+g++ -c -std=c++20 -O2 modMath.h
+g++ -c -std=c++20 -O2 stribog.cpp -o stribog.o
+g++ -c -std=c++20 -O2 stribog_main.cpp -o stribog_main.o
+g++ stribog_main.o BigInt.o stribog.o -o stribog_app
+./stribog_app
+
+g++ -c -std=c++20 -O2 rsa_bigint.cpp -o rsa_bigint.o
+g++ -c -std=c++20 -O2 rsa_main.cpp -o rsa_main.o
+g++ rsa_main.o BigInt.o rsa_bigint.o -o rsa_app -lbcrypt
+./rsa_app
+./rsa_app test 2048
+./rsa_app keygen 2048 key_dev
+
+g++ -c -std=c++20 -O2 grasshopper.cpp -o grasshopper.o
+g++ -c -std=c++20 -O2 grasshopper_main.cpp -o grasshopper_main.o
+g++ grasshopper_main.o BigInt.o grasshopper.o -o grasshopper_app
+./grasshopper_app

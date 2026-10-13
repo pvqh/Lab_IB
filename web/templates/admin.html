@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Администрирование</h1>
+
+<h2>Разрешённые методы шифрования</h2>
+<p class="hint">Снятая галочка убирает метод из формы шифрования.
+   Обработчик отправки проверяет разрешение ещё раз — на случай, если
+   форму подменили.</p>
+<form method="post" action="/admin/methods">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+  <label class="check">
+    <input type="checkbox" name="kuz_enabled" value="1" {% if kuz_enabled %}checked{% endif %}>
+    Кузнечик (ГОСТ Р 34.12-2015), режим CTR
+  </label>
+  <label class="check">
+    <input type="checkbox" name="rsa_enabled" value="1" {% if rsa_enabled %}checked{% endif %}>
+    RSA
+  </label>
+  <button type="submit">Сохранить</button>
+</form>
+
+<h2>Пользователи</h2>
+<table>
+  <tr><th>№</th><th>Имя</th><th>Почта</th><th>Роль</th><th>Состояние</th><th></th></tr>
+  {% for account in users %}
+  <tr>
+    <td>{{ account.id }}</td>
+    <td>{{ account.username }}</td>
+    <td>{{ account.email }}</td>
+    <td>{{ account.role }}</td>
+    <td>
+      {% if not account.is_active %}отключён
+      {% elif account.locked_until %}блокировка до {{ account.locked_until }}
+      {% else %}активен{% endif %}
+    </td>
+    <td>
+      {% if account.id != user.id %}
+      <form method="post" action="/admin/users/{{ account.id }}/toggle" class="inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <button type="submit" class="link">
+          {{ 'включить' if not account.is_active else 'отключить' }}
+        </button>
+      </form>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+<h2>Создать пользователя</h2>
+<p class="hint">Начальный пароль генерируется случайно, показывается один раз
+   и обязателен к смене при первом входе. Первый администратор создаётся
+   скриптом <code>seed_admin.py</code>, а не через веб: открытый маршрут
+   «сделай меня администратором», который забыли удалить, — это полная
+   компрометация системы.</p>
+<form method="post" action="/admin/users">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+  <label>Имя пользователя</label>
+  <input type="text" name="username" required>
+  <label>Электронная почта</label>
+  <input type="email" name="email" required>
+  <label>Роль</label>
+  <select name="role">
+    <option value="user">Пользователь</option>
+    <option value="admin">Администратор</option>
+  </select>
+  <button type="submit">Создать</button>
+</form>
+
+<h2>Сообщения всех пользователей</h2>
+<p><a href="/admin/messages">Открыть общий список</a></p>
+
+<h2>Журнал (последние 40 записей)</h2>
+<table>
+  <tr><th>Время</th><th>Действие</th><th>Пользователь</th><th>Адрес</th><th>Подробности</th></tr>
+  {% for entry in recent %}
+  <tr>
+    <td>{{ entry.ts }}</td>
+    <td>{{ entry.action }}</td>
+    <td>{{ entry.user_id if entry.user_id else '—' }}</td>
+    <td>{{ entry.ip }}</td>
+    <td>{{ entry.detail }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

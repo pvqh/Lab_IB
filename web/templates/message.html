@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Сообщение № {{ message.id }}</h1>
+
+<table>
+  <tr><th>Владелец</th><td>{{ owner }}</td></tr>
+  <tr><th>Дата (UTC)</th><td>{{ message.created_at }}</td></tr>
+  <tr><th>Метод</th>
+      <td>{{ 'Кузнечик (ГОСТ Р 34.12-2015), режим CTR' if message.method == 'kuznyechik'
+             else 'RSA, учебная схема без заполнения' }}</td></tr>
+  <tr><th>Ключ</th><td>{{ message.key_id }}</td></tr>
+  {% if message.iv_hex %}
+  <tr><th>IV</th><td class="hex">{{ message.iv_hex }}</td></tr>
+  {% endif %}
+</table>
+
+<h2>Открытый текст</h2>
+{% if error %}
+  <div class="box error">Не удалось расшифровать: {{ error }}</div>
+{% else %}
+  <pre>{{ plaintext }}</pre>
+{% endif %}
+
+<h2>Шифртекст</h2>
+<pre class="hex">{{ message.ciphertext_hex }}</pre>
+
+{% if message.wrapped_key_hex %}
+<h2>Ключ сообщения</h2>
+<p class="hint">Ключ случаен и уникален для этого сообщения. В базе он лежит
+   зашифрованным мастер-ключом сервера, который хранится файлом вне каталога
+   приложения — украденной базы недостаточно для расшифровки.</p>
+<pre class="hex">{{ message.wrapped_key_hex }}</pre>
+{% endif %}
+
+<h2>Документ с подписью</h2>
+<p>
+  <a href="/history/{{ message.id }}/pdf">Скачать PDF</a> ·
+  <a href="/history/{{ message.id }}/pdf.sig">Скачать подпись (.sig)</a> ·
+  <a href="/verify">Проверить подпись</a>
+</p>
+<p class="slow">
+  Подпись лежит отдельным файлом, а не внутри PDF: встроенная подпись
+  изменила бы байты документа и перестала бы ему соответствовать.
+  Первое формирование занимает около 16 секунд — столько стоит возведение
+  в степень по модулю 32768 бит; дальше файлы отдаются из кеша.
+</p>
+
+<p><a href="/history">← К списку</a></p>
+{% endblock %}

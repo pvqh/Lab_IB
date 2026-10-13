@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Код восстановления</h1>
+<p class="hint">Один код заменяет и код из письма, и код приложения.
+   После использования он гасится навсегда.</p>
+
+<form method="post" action="/login/recovery">
+  <label>Код вида aaaa-bbbb-cccc</label>
+  <input type="text" name="code" required autofocus>
+  <button type="submit">Войти</button>
+</form>
+{% endblock %}

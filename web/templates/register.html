@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Регистрация</h1>
+
+<form method="post" action="/register">
+  <label>Имя пользователя
+    <span class="hint">3–32 символа: латинские буквы, цифры, подчёркивание</span>
+  </label>
+  <input type="text" name="username" required value="{{ values.username if values else '' }}">
+
+  <label>Электронная почта
+    <span class="hint">на этот адрес будет приходить код подтверждения входа</span>
+  </label>
+  <input type="email" name="email" required value="{{ values.email if values else '' }}">
+
+  <label>Пароль
+    <span class="hint">не короче 12 символов, строчные и заглавные буквы,
+      цифра и специальный символ</span>
+  </label>
+  <input type="password" name="password" required>
+
+  <label>Пароль ещё раз</label>
+  <input type="password" name="password_repeat" required>
+
+  <button type="submit">Зарегистрироваться</button>
+  <p class="slow">Проверка пароля занимает около секунды: хеш считается
+     Стрибогом с многократным повторением.</p>
+</form>
+{% endblock %}

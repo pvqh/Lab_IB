@@ -1,0 +1,10 @@
+# Веб-слой. Ставится в виртуальное окружение:
+#   python -m venv .venv
+#   .venv\Scripts\pip install -r requirements.txt
+fastapi
+uvicorn[standard]
+jinja2
+python-multipart
+pyotp
+qrcode
+fpdf2

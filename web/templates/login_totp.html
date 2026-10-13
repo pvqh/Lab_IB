@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Вход · шаг 3 из 3</h1>
+<p class="hint">Фактор 3: то, что вы держите в руках. Шестизначный код
+   из приложения-аутентификатора, он меняется каждые 30 секунд.</p>
+
+<form method="post" action="/login/totp">
+  <label>Код приложения</label>
+  <input type="text" name="code" inputmode="numeric" maxlength="6" required autofocus>
+  <button type="submit">Войти</button>
+</form>
+
+<p><a href="/login/recovery">Использовать код восстановления</a></p>
+{% endblock %}

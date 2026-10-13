@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Проверка электронной подписи</h1>
+<p class="hint">
+  Страница открыта всем: для проверки нужен только открытый ключ.
+  Подпись, которую никто не может проверить, — это украшение, а не подпись.
+</p>
+
+{% if result is defined %}
+  <div class="box {{ 'good' if result else 'error' }}">
+    <div class="verdict {{ 'ok' if result else 'bad' }}">
+      {{ 'Подпись верна' if result else 'Подпись НЕ соответствует документу' }}
+    </div>
+    <p>Файл: {{ filename }}</p>
+    <pre>{{ explanation }}</pre>
+  </div>
+{% endif %}
+
+<form method="post" action="/verify" enctype="multipart/form-data">
+  <label>Документ (например, скачанный PDF)</label>
+  <input type="file" name="document" required>
+
+  <label>Файл подписи (.sig)</label>
+  <input type="file" name="signature" required>
+
+  <button type="submit">Проверить</button>
+</form>
+
+<h2>Как это работает</h2>
+<pre>подпись  = RSA_d( Стрибог512(байты документа) )      ключ: закрытый
+проверка: RSA_e( подпись ) == Стрибог512(байты документа)   ключ: открытый</pre>
+<p class="hint">
+  Модуль RSA: {% if rsa_bits %}{{ rsa_bits }} бит{% else %}ключ не найден{% endif %}.
+  Изменение хотя бы одного байта документа меняет хеш, и проверка перестаёт проходить.
+</p>
+{% endblock %}

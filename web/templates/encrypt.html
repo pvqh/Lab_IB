@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Зашифровать сообщение</h1>
+
+{% if not methods %}
+  <div class="box error">
+    Администратор отключил все методы шифрования. Обратитесь к администратору.
+  </div>
+{% else %}
+<form method="post" action="/encrypt">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+  <label>Метод
+    <span class="hint">список составлен из методов, разрешённых администратором;
+      при отправке сервер проверяет разрешение повторно</span>
+  </label>
+  <select name="method">
+    {% if 'kuznyechik' in methods %}
+      <option value="kuznyechik">Кузнечик, режим CTR — любая длина сообщения</option>
+    {% endif %}
+    {% if 'rsa' in methods %}
+      <option value="rsa">RSA — не длиннее {{ rsa_limit }} байт</option>
+    {% endif %}
+  </select>
+
+  <label>Текст сообщения</label>
+  <textarea name="plaintext" required autofocus></textarea>
+
+  <button type="submit">Зашифровать</button>
+  <p class="slow">
+    Кузнечик отрабатывает за доли секунды. RSA с модулем в 32768 бит —
+    операция тяжёлая: шифрование быстрое, а расшифрование и подпись
+    занимают около 16 секунд. Это свойство размера ключа, а не ошибка.
+  </p>
+</form>
+{% endif %}
+{% endblock %}

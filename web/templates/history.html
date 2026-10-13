@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>История сообщений</h1>
+<p class="hint">Открытый текст в базе не хранится: показаны шифртексты.
+   Расшифрование происходит в момент открытия записи.</p>
+
+{% if not messages %}
+  <div class="box">Пока нет ни одного сообщения. <a href="/encrypt">Зашифровать первое</a>.</div>
+{% else %}
+<table>
+  <tr><th>№</th><th>Дата (UTC)</th><th>Метод</th><th>Шифртекст (начало)</th><th></th></tr>
+  {% for message in messages %}
+  <tr>
+    <td>{{ message.id }}</td>
+    <td>{{ message.created_at }}</td>
+    <td>{{ 'Кузнечик / CTR' if message.method == 'kuznyechik' else 'RSA' }}</td>
+    <td class="hex">{{ message.ciphertext_hex[:48] }}…</td>
+    <td><a href="/history/{{ message.id }}">Открыть</a></td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+{% endblock %}

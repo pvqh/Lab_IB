@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Вход · шаг 1 из 3</h1>
+<p class="hint">Фактор 1: то, что вы знаете.</p>
+
+<form method="post" action="/login">
+  <label>Имя пользователя</label>
+  <input type="text" name="username" required autofocus>
+
+  <label>Пароль</label>
+  <input type="password" name="password" required>
+
+  <button type="submit">Продолжить</button>
+</form>
+
+<p><a href="/password/reset">Забыли пароль?</a></p>
+{% endblock %}

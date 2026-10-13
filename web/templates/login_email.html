@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Вход · шаг 2 из 3</h1>
+<p class="hint">Фактор 2: то, к чему у вас есть доступ. Код отправлен на почту
+   и действует несколько минут.</p>
+
+{% if mail_undelivered %}
+<div class="box notice">
+  SMTP-сервер недоступен, письмо сохранено в <code>web/var/mail/</code>.
+  Для демонстрации запустите Mailpit и откройте <code>http://localhost:8025</code>.
+</div>
+{% endif %}
+
+<form method="post" action="/login/email">
+  <label>Код из письма (6 цифр)</label>
+  <input type="text" name="code" inputmode="numeric" maxlength="6" required autofocus>
+  <button type="submit">Продолжить</button>
+</form>
+
+<p><a href="/login/recovery">Использовать код восстановления</a></p>
+{% endblock %}

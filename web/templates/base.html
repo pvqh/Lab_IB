@@ -1,0 +1,55 @@
+{#
+  Общий каркас всех страниц.
+
+  Автоэкранирование Jinja2 включено по умолчанию и нигде не отключается:
+  любой текст пользователя выводится через {{ ... }} и превращается
+  в безопасный HTML. Фильтр |safe рядом с пользовательскими данными
+  не применяется ни разу — именно так и предотвращается XSS.
+#}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <a class="brand" href="/">ГОСТ · Защищённые сообщения</a>
+  <nav>
+    {% if user %}
+      <a href="/encrypt">Зашифровать</a>
+      <a href="/history">История</a>
+      <a href="/verify">Проверка подписи</a>
+      {% if user.role == 'admin' %}<a href="/admin">Администрирование</a>{% endif %}
+      <span class="who">{{ user.username }} · {{ user.role }}</span>
+      <form method="post" action="/logout" class="inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <button type="submit" class="link">Выйти</button>
+      </form>
+    {% else %}
+      <a href="/verify">Проверка подписи</a>
+      <a href="/login">Вход</a>
+      <a href="/register">Регистрация</a>
+    {% endif %}
+  </nav>
+</header>
+
+<main>
+  {% if errors %}
+    <div class="box error">
+      <ul>{% for message in errors %}<li>{{ message }}</li>{% endfor %}</ul>
+    </div>
+  {% endif %}
+  {% if notice %}<div class="box notice">{{ notice }}</div>{% endif %}
+
+  {% block content %}{% endblock %}
+</main>
+
+<footer>
+  Лабораторные работы по информационной безопасности · кафедра 304 ·
+  Кузнечик (ГОСТ Р 34.12-2015), Стрибог (ГОСТ Р 34.11-2012), RSA
+</footer>
+</body>
+</html>

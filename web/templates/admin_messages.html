@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Сообщения всех пользователей</h1>
+<p class="hint">Та же выборка, что в истории пользователя, но без фильтра
+   по идентификатору и с колонкой владельца.</p>
+
+<table>
+  <tr><th>№</th><th>Владелец</th><th>Дата (UTC)</th><th>Метод</th>
+      <th>Шифртекст (начало)</th><th></th></tr>
+  {% for message in messages %}
+  <tr>
+    <td>{{ message.id }}</td>
+    <td>{{ message.username }}</td>
+    <td>{{ message.created_at }}</td>
+    <td>{{ 'Кузнечик / CTR' if message.method == 'kuznyechik' else 'RSA' }}</td>
+    <td class="hex">{{ message.ciphertext_hex[:40] }}…</td>
+    <td><a href="/history/{{ message.id }}">Открыть</a></td>
+  </tr>
+  {% endfor %}
+</table>
+
+<p><a href="/admin">← К панели</a></p>
+{% endblock %}
